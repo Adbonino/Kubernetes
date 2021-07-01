@@ -44,9 +44,10 @@ mysql> select * from Projects;
 |  2 | Developers | DO180 |
 +----+------------+-------+
 2 rows in set (0.00 sec)
-```
+
 mysql> exit
 Bye
 bash-4.2$ exit
 exit
 [abonino@server1 ~]$
+```
