@@ -29,6 +29,8 @@ mysql> show databases;
 
 mysql> use itmes;
 Database changed
+mysql> create table PROJECTS ( id int(11) NOT NULL, name varchar(255) DEFAULT NULL, code varchar(255) DEFAULT NULL, PRIMARY KEY (id));
+Query OK, 0 rows affected (0.03 sec)
 mysql> show tables;
 +-----------------+
 | Tables_in_itmes |
