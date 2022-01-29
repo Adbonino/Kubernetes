@@ -65,7 +65,7 @@ NAME    READY   STATUS    RESTARTS    AGE   ESTADO     RESPONSABLE LABELS
 tomcat  1/1     Running   0           5m45s test                   estado=test,reponsable=juan
 ```
 
-modo imperativo:
+modo declarativco:
 
 Modifico el archivo tomcat-yaml
 
@@ -94,8 +94,144 @@ tomcat  1/1     Running   0           5m45s desarrollo rosa                   es
 $ kubectl describe pod/tomcat
 ```
  
- 
- 
+# Selectors
 
+Muy importante para encontrar objetos y es el objeto primario qeu se usa para relacionar componentes.
+Lo selectores con como where y los utilizo para localizar objetos qeu tengan determinadas etiquetas.
+
+Ej: buscame todos los pods que tengan como etiqueta desarrollo.
+
+```
+$ vi tomcat.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tomcat
+  labels:
+    estado: "desarrollo"
+    responsable: "juan"
+spec:
+  containers:
+   - name: tomcat     
+     image: tomcat
+```
+
+```
+$ vi tomcat1.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tomcat1
+  labels:
+    estado: "desarrollo"
+    responsable: "juan"
+spec:
+  containers:
+   - name: tomcat     
+     image: tomcat
+```   
+     
+```
+$ vi tomcat2.yaml   
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tomcat2
+  labels:
+    estado: "testing"
+    responsable: "pedro"
+spec:
+  containers:
+   - name: tomcat     
+     image: tomcat
+```
+
+```
+$ vi tomcat3.yaml   
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tomcat3
+  labels:
+    estado: "produccion"
+    responsable: "pedro"
+spec:
+  containers:
+   - name: tomcat     
+     image: tomcat
+```
+
+aplico todos los ficheros qeu hay dentro del directorio
+
+```
+$ kubectl apply -f .
+$ kubectl get pods
+NAME      READY   STATUS    RESTARTS    AGE
+tomcat    1/1     Runnine   0           14s
+tomcat1   1/1     Runnine   0           14s
+tomcat2   1/1     Runnine   0           14s
+tomcat3   1/1     Runnine   0           14s
+$ kubectl get pods --show-labels
+NAME      READY   STATUS    RESTARTS    AGE   LABELS
+tomcat    1/1     Runnine   0           14s   estado=desarrollo,responsable=juan 
+tomcat1   1/1     Runnine   0           14s   estado=desarrollo,responsable=juan
+tomcat2   1/1     Runnine   0           14s   estado=testing,responsable=pedro
+tomcat3   1/1     Runnine   0           14s   estado=produccion,reponsable=pedro  
+```
+
+Como busco con los selectores puedo usar la opcion -l o --selectors
+
+```
+$ kubectl get pods --show-labels -l estado=desarrollo
+NAME      READY   STATUS    RESTARTS    AGE   LABELS
+tomcat    1/1     Runnine   0           14s   estado=desarrollo,responsable=juan 
+tomcat1   1/1     Runnine   0           14s   estado=desarrollo,responsable=juan
+$ kubectl get pods --show-labels -l estado=testing
+NAME      READY   STATUS    RESTARTS    AGE   LABELS
+tomcat2   1/1     Runnine   0           14s   estado=testing,responsable=pedro
+$ kubectl get pods --show-labels -l estado==testing
+NAME      READY   STATUS    RESTARTS    AGE   LABELS
+tomcat2   1/1     Runnine   0           14s   estado=testing,responsable=pedro
+```
+
+Condicion tipo and
+ 
+```
+$ kubectl get pods --show-labels -l estado=desarrollo,responsable=juan
+NAME      READY   STATUS    RESTARTS    AGE   LABELS
+tomcat    1/1     Runnine   0           14s   estado=desarrollo,responsable=juan 
+tomcat1   1/1     Runnine   0           14s   estado=desarrollo,responsable=juan
+```
+
+Negacion
+
+```
+$ kubectl get pods --show-labels -l responsable!=juan
+NAME      READY   STATUS    RESTARTS    AGE   LABELS
+tomcat2   1/1     Runnine   0           14s   estado=testing,responsable=pedro
+tomcat3   1/1     Runnine   0           14s   estado=produccion,reponsable=pedro  
+$ kubectl get pods --show-labels -l estado!=testing
+NAME      READY   STATUS    RESTARTS    AGE   LABELS
+tomcat    1/1     Runnine   0           14s   estado=desarrollo,responsable=juan 
+tomcat1   1/1     Runnine   0           14s   estado=desarrollo,responsable=juan
+tomcat3   1/1     Runnine   0           14s   estado=produccion,reponsable=pedro  
+```
+
+Trabajar mediante conjuntos
+
+```
+$ kubectl get pods --show-labels -l 'estado in(desarrollo)' 
+NAME      READY   STATUS    RESTARTS    AGE   LABELS
+tomcat    1/1     Runnine   0           14s   estado=desarrollo,responsable=juan 
+tomcat1   1/1     Runnine   0           14s   estado=desarrollo,responsable=juan
+$ kubectl get pods --show-labels -l 'estado in(desarrollo,testing)'
+NAME      READY   STATUS    RESTARTS    AGE   LABELS
+tomcat    1/1     Runnine   0           14s   estado=desarrollo,responsable=juan 
+tomcat1   1/1     Runnine   0           14s   estado=desarrollo,responsable=juan
+tomcat2   1/1     Runnine   0           14s   estado=testing,responsable=pedro
+$ kubectl get pods --show-labels -l 'estado notin(desarrollo,testing)'
+NAME      READY   STATUS    RESTARTS    AGE   LABELS
+tomcat3   1/1     Runnine   0           14s   estado=produccion,reponsable=pedro 
+```
 
 
