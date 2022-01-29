@@ -2,4 +2,6 @@
 
 Descripción
 
-     $ vi archivo.yaml
+```
+$ vi archivo.yaml
+```
