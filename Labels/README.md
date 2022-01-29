@@ -6,6 +6,8 @@ Selectors: identificar objewtos en las busqeudas y las relaciones
 
 Annotations: describir o comentar un objeto para que le quede claro a otro desarrollador
 
+## Labels
+
 ```
 $ vi tomcat.yaml
 apiVercion: v1
@@ -35,7 +37,7 @@ NAME    READY   STATUS    RESTARTS    AGE   ESTADO     API   LABELS
 tomcat  1/1     Running   0           5m45s desarrollo        estado=desarrollo        
 ```
 
-## Modificar etiquetas
+### Modificar etiquetas
 
 modo imperativo:
 
@@ -94,7 +96,7 @@ tomcat  1/1     Running   0           5m45s desarrollo rosa                   es
 $ kubectl describe pod/tomcat
 ```
  
-# Selectors
+## Selectors
 
 Muy importante para encontrar objetos y es el objeto primario qeu se usa para relacionar componentes.
 Lo selectores con como where y los utilizo para localizar objetos qeu tengan determinadas etiquetas.
@@ -234,4 +236,35 @@ NAME      READY   STATUS    RESTARTS    AGE   LABELS
 tomcat3   1/1     Runnine   0           14s   estado=produccion,reponsable=pedro 
 ```
 
+Borra todos los pods que tengas la etiqueta estado=desarrollo
+
+```
+$ kubectl delete pods -l estado=desarrollo
+```
+
+## Anotaciones
+
+Son descriptivas, nos permite documentacion, comentarios y demas (sirven para describir y documentar a nuestros componentes)
+
+```
+$ vi tomcat4
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tomcat4
+  labels:
+    estado: "produccion"
+    responsable: "pedro"
+  annotations:
+    doc: "Se debe compilar con gcc"
+    adjunto: "ejemplo de anotacion"
+spec:
+  containers:
+   - name: tomcat     
+     image: tomcat
+$ kubectl apply -f tomcat4
+$ kubectl get pod tomcat4
+$ kubectl describe pod tomcat4    # no hay un get especifico para las anotaciones
+$ kubectl get pod tomcat4 -o jsonpath={.metadata.annotations}
+```
 
