@@ -1,8 +1,11 @@
 # Labels, Selectors y Annotations
 
 Labels: Sirven para etiquetar objetos. A travez de ellas se pueden realizar relaciones.
+
 Selectors: identificar objewtos en las busqeudas y las relaciones
+
 Annotations: describir o comentar un objeto para que le quede claro a otro desarrollador
+
 ```
 $ vi tomcat.yaml
 apiVercion: v1
